@@ -1,91 +1,79 @@
 #include "Events.h"
 
 namespace Events
-{
-    RE::BSEventNotifyControl OnHitHandler::ProcessEvent(const RE::TESHitEvent* a_event, RE::BSTEventSource<RE::TESHitEvent>* a_eventSource) noexcept
-    {
-        using HitFlag = RE::TESHitEvent::Flag;
-        if (!a_event || !a_event->target || !a_event->cause || a_event->projectile) {
-            return RE::BSEventNotifyControl::kContinue;
-        }
-        auto defender = a_event->target ? a_event->target->As<RE::Actor>() : nullptr;
-        if (!defender) {
-            return RE::BSEventNotifyControl::kContinue;
-        }
-        auto aggressor = a_event->cause ? a_event->cause->As<RE::Actor>() : nullptr;
-        if (!aggressor) {
-            return RE::BSEventNotifyControl::kContinue;
-        }
-        Utility* util = Utility::GetSingleton();
-        const Settings* settings = Settings::GetSingleton();
-        if (settings->use_power_attack){
-            if (a_event->flags.any(HitFlag::kPowerAttack) && a_event->source || aggressor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMass) >= settings->mass_threshold) {
-                logger::debug("aggressor mass is {}", aggressor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMass));
-                auto attacking_weap = Utility::getWieldingWeapon(aggressor);
-                if (!defender || !attacking_weap || !defender->GetActorRuntimeData().currentProcess || !defender->GetActorRuntimeData().currentProcess->high || !attacking_weap->IsMelee() || !defender->Get3D() || attacking_weap->IsHandToHandMelee())
-                {
-                    logger::debug("power attack event, first continue");
-                    return RE::BSEventNotifyControl::kContinue;
-                }
-                if (!aggressor || !aggressor->GetActorRuntimeData().currentProcess || !aggressor->GetActorRuntimeData().currentProcess->high) {
-                    logger::debug("Attack Actor Not Found!");
-                    return RE::BSEventNotifyControl::kContinue;
-                }
-                auto data_aggressor = aggressor->GetActorRuntimeData().currentProcess->high->attackData;
-                if (!data_aggressor) {
-                    logger::debug("Attacker Attack Data Not Found!");
-                    return RE::BSEventNotifyControl::kContinue;
-                }
-                auto defender_weap = util->getWieldingWeapon(defender);
-                if (!defender_weap || defender_weap->IsHandToHandMelee()) {
-                    logger::debug("{} has nothing equipped", defender->GetName());
-                    return RE::BSEventNotifyControl::kContinue;
-                }
-                if (defender_weap && defender_weap->IsBow() || defender_weap->IsCrossbow()) {
-                    logger::debug("{}'s weapon is a bow", defender_weap->GetName());
-                    logger::debug("aggressor is {}", aggressor->GetName());
-                    logger::debug("{} has {} equipped", defender->GetName(), defender_weap->GetName());
-                    if ((defender_weap->HasKeywordString("REQ_BowBreakable") || defender_weap->HasKeywordString("BowBreakable")) && (defender->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBowDraw || defender->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBowDrawn)) {
-                        logger::debug("weapon will get damaged");                    
-                        util->ProcessWeaponLoss(defender, defender_weap);                    
-                    } 
-                }            
-            }
+{ 
 
-        }
-        else if (a_event->source || aggressor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMass) >= settings->mass_threshold) {
-            logger::debug("aggressor mass is {}", aggressor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMass));
-            //auto attacking_weap = RE::TESForm::LookupByID<RE::TESObjectWEAP>(a_event->source);
-            auto attacking_weap = Utility::getWieldingWeapon(aggressor);
-            if (!defender || !attacking_weap || !defender->GetActorRuntimeData().currentProcess || !defender->GetActorRuntimeData().currentProcess->high || !attacking_weap->IsMelee() || !defender->Get3D() || attacking_weap->IsHandToHandMelee())
-            {
-                logger::debug("normal attack event, first continue");
-                return RE::BSEventNotifyControl::kContinue;
-            }
-            if (!aggressor || !aggressor->GetActorRuntimeData().currentProcess || !aggressor->GetActorRuntimeData().currentProcess->high) {
-                logger::debug("Attack Actor Not Found!");
-                return RE::BSEventNotifyControl::kContinue;
-            }
-            auto data_aggressor = aggressor->GetActorRuntimeData().currentProcess->high->attackData;
-            if (!data_aggressor) {
-                logger::debug("Attacker Attack Data Not Found!");
-                return RE::BSEventNotifyControl::kContinue;
-            }
-            auto defender_weap = util->getWieldingWeapon(defender);
-            if (!defender_weap || defender_weap->IsHandToHandMelee()) {
-                logger::debug("{} has nothing equipped", defender->GetName());
-                return RE::BSEventNotifyControl::kContinue;
-            }
-            if (defender_weap && defender_weap->IsBow() || defender_weap->IsCrossbow()) {
-                logger::debug("{}'s weapon is a bow", defender_weap->GetName());
-                logger::debug("aggressor is {}", aggressor->GetName());
-                logger::debug("{} has {} equipped", defender->GetName(), defender_weap->GetName());
-                if ((defender_weap->HasKeywordString("REQ_BowBreakable") || defender_weap->HasKeywordString("BowBreakable")) && (defender->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBowDraw || defender->AsActorState()->GetAttackState() == RE::ATTACK_STATE_ENUM::kBowDrawn)) {
-                    logger::debug("weapon will get damaged");                    
-                    util->ProcessWeaponLoss(defender, defender_weap);                    
-                } 
-            }            
-        }
-        return RE::BSEventNotifyControl::kContinue;
+    void OnHitBow::Register()
+    {
+        RE::ScriptEventSourceHolder* eventHolder = RE::ScriptEventSourceHolder::GetSingleton();
+        eventHolder->AddEventSink(this);
+        REX::INFO("Registered for {}", typeid(RE::TESHitEvent).name());
     }
+
+    bool OnHitBow::IsInMassRange(RE::Actor* a_attacker) const
+    {
+        return !set::use_actor_mass.GetValue() || a_attacker->GetActorValue(RE::ActorValue::kMass) >= set::mass_threshold.GetValue();
+    }
+
+    bool OnHitBow::UseOrIsPowerAttack(bool p_atk) const
+    {
+        return !set::only_power_attacks.GetValue() || p_atk;
+    }
+
+    bool OnHitBow::CanDefenderWeaponBreak(RE::Actor* defender, RE::TESObjectWEAP* weapon) const
+    {
+        return (weapon->HasKeywordString("REQ_BowBreakable") || weapon->HasKeywordString("BowBreakable")) && (defender->GetAttackState() == RE::ATTACK_STATE_ENUM::kBowDraw || defender->GetAttackState() == RE::ATTACK_STATE_ENUM::kBowDrawn);
+    }
+
+    bool OnHitBow::IsDefenderProtected(RE::Actor* defender) const
+    {
+        return ActorUtil::HasEffectWithKeywordActive(defender, "UnbreakableBow");
+    }
+
+    event_result OnHitBow::ProcessEvent(const RE::TESHitEvent* event, RE::BSTEventSource<RE::TESHitEvent>*)
+    {
+        using HFlag = RE::TESHitEvent::Flag;
+        if (!event || !event->target || !event->cause || event->projectile || !event->source) {
+            return event_result::kContinue;
+        }
+
+        auto defender = event->target ? event->target->As<RE::Actor>() : nullptr;
+        if (!defender || !defender->currentProcess || !defender->currentProcess->high || !defender->Get3D() ) {
+            return event_result::kContinue;
+        }
+
+        auto aggressor = event->cause ? event->cause->As<RE::Actor>() : nullptr;
+        if (!aggressor || !aggressor->currentProcess || !aggressor->currentProcess->high || !aggressor->Get3D()) {
+            return event_result::kContinue;
+        }
+
+        if (!IsInMassRange(aggressor)) {
+            return event_result::kContinue;
+        }
+        bool p_atk = event->flags.any(HFlag::kPowerAttack);
+        if (!UseOrIsPowerAttack(p_atk)) {
+            return event_result::kContinue;
+        }
+
+        if (IsDefenderProtected(defender)) {
+            return event_result::kContinue;
+        }
+
+        RE::TESObjectWEAP* attack_weapon  = ActorUtil::getWieldingWeapon(aggressor); 
+        if (!attack_weapon || !attack_weapon->IsMelee() || attack_weapon->IsHandToHandMelee()) {
+            return event_result::kContinue;
+        }
+
+        RE::TESObjectWEAP* defender_weapon = ActorUtil::getWieldingWeapon(defender);
+        if (!defender_weapon || !(defender_weapon->IsBow() || defender_weapon->IsCrossbow())) {
+            return event_result::kContinue;
+        }
+
+        if (CanDefenderWeaponBreak(defender, defender_weapon)) {
+            Utility::ProcessWeaponLoss(defender, defender_weapon);
+        }
+
+        return event_result::kContinue;
+    }
+
 } // namespace Events

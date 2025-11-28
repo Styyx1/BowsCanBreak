@@ -1,0 +1,8 @@
+[Toggles]
+bDestroyBow = true
+bSpawnWood = true
+bOnlyUsePowerAttacks = true
+bUseActorMass = false
+
+[Settings]
+fMassThreshold = 2.0

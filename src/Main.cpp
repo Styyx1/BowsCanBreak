@@ -1,34 +1,26 @@
 #include "Events.h"
-#include "Logging.h"
 #include "Settings.h"
+#include "menu.h"
 
 void Listener(SKSE::MessagingInterface::Message* message) noexcept
 {
     if (message->type == SKSE::MessagingInterface::kDataLoaded) {
-        Settings::LoadSettings();
-        Settings::LoadForms();
-        Events::OnHitHandler::Register();
-    }
+        
+        Config::Formloader::GetSingleton()->LoadForms();
+        Events::OnHitBow::GetSingleton()->Register();
+        Config::Settings::destroy_bow.SetValue(true);
+        Config::Settings::GetSingleton()->UpdateSettings(true);
+
+    }    
 }
 
 SKSEPluginLoad(const SKSE::LoadInterface* skse)
 {
-    InitLogging();
-
-    const auto plugin{ SKSE::PluginDeclaration::GetSingleton() };
-    const auto name{ plugin->GetName() };
-    const auto version{ plugin->GetVersion() };
-
-    logger::info("{} {} is loading...", name, version);
-
     Init(skse);
+    Config::Settings::GetSingleton()->UpdateSettings(false);
+    Menu::RegisterMenu();
+    SKSE::GetMessagingInterface()->RegisterListener(Listener);
 
-    if (const auto messaging{ SKSE::GetMessagingInterface() }; !messaging->RegisterListener(Listener)) {
-        return false;
-    }
-
-    logger::info("{} has finished loading.", name);
-    logger::info("");
 
     return true;
 }
