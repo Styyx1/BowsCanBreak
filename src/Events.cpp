@@ -35,6 +35,11 @@ namespace Events
         return !Config::Settings::use_health_percentage.GetValue() || ActorUtil::GetActorValuePercentage(defender, RE::ActorValue::kHealth) <= Config::Settings::health_percentage_threshold.GetValue() / 100.0;
     }
 
+    bool OnHitBow::IsHighSkill(RE::Actor* defender) const
+    {
+        return !Config::Settings::prevent_with_skill.GetValue() || defender->GetBaseActorValue(RE::ActorValue::kArchery) >= Config::Settings::skill_level_threshold.GetValue();
+    }
+
     event_result OnHitBow::ProcessEvent(const RE::TESHitEvent* event, RE::BSTEventSource<RE::TESHitEvent>*)
     {
         using HFlag = RE::TESHitEvent::Flag;
@@ -67,6 +72,11 @@ namespace Events
         if (!IsInHealthRange(defender)) {
             return event_result::kContinue;
         }
+
+        if (IsHighSkill(defender)) {
+            return event_result::kContinue;
+        }
+
         RE::TESObjectWEAP* attack_weapon  = ActorUtil::getWieldingWeapon(aggressor); 
         if (!attack_weapon || !attack_weapon->IsMelee() || attack_weapon->IsHandToHandMelee()) {
             return event_result::kContinue;

@@ -40,6 +40,8 @@ namespace Menu
             inline std::string use_health_percentage     = "Use Health Percentage";
             inline std::string health_percentage_threshold = "Health Percentage Threshold";
             inline std::string wood_chance                 = "Wood Spawn Chance";
+            inline std::string prevent_with_skill          = "Prevent with High Skill";
+            inline std::string skill_level_threshold       = "Skill Level Threshold";
         } // namespace Label
 
         namespace Tool
@@ -52,6 +54,8 @@ namespace Menu
             inline std::string use_health_percentage = "Bows can only break if the health of the archer is below a certain percentage";
             inline std::string health_percentage_threshold = "Health percentage threshold below which bows can break";
             inline std::string wood_chance                 = "Chance (in percentage) to spawn firewood when a bow breaks";
+            inline std::string prevent_with_skill          = "Prevent bow breaking if the archer has high Archery skill";
+            inline std::string skill_level_threshold       = "Archery skill level threshold above which bow breaking is prevented";
         } // namespace Tool
 
         namespace Var
@@ -64,6 +68,8 @@ namespace Menu
             inline bool  use_health_percentage;
             inline float health_percentage_threshold;
             inline float wood_chance;
+            inline bool  prevent_with_skill;
+            inline int   skill_level_threshold;
         } // namespace Var
 
         void __stdcall RenderSettings();

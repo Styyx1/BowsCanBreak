@@ -16,6 +16,8 @@ namespace Config
         inline static REX::TOML::Bool use_health_percentage{ TOGGLES, "bUseHealthPercentage", false };
         inline static REX::TOML::F32  health_percentage_threshold{ SETTINGS, "fHealthPercentageThreshold", 25.f };
         inline static REX::TOML::F32  wood_chance{ SETTINGS, "fWoodSpawnChance", 75.0f };
+        inline static REX::TOML::Bool prevent_with_skill{ TOGGLES, "bPreventWithSkill", false };
+        inline static REX::TOML::I32  skill_level_threshold{ SETTINGS, "iSkillLevelThreshold", 50 };
 
         void UpdateSettings(bool a_save);
 

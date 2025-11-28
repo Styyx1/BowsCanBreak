@@ -19,6 +19,7 @@ namespace Events
         bool CanDefenderWeaponBreak(RE::Actor* defender, RE::TESObjectWEAP* weapon) const;
         bool IsDefenderProtected(RE::Actor* defender) const;
         bool IsInHealthRange(RE::Actor* defender) const;
+        bool IsHighSkill(RE::Actor* defender) const;
     
     };
 

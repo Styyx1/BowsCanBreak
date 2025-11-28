@@ -27,6 +27,8 @@ void RestoreFromSettings()
     health_percentage_threshold = set::health_percentage_threshold.GetValue();
     use_health_percentage = set::use_health_percentage.GetValue();
     wood_chance = set::wood_chance.GetValue();
+    prevent_with_skill          = set::prevent_with_skill.GetValue();
+    skill_level_threshold       = set::skill_level_threshold.GetValue();
 }
 
 void ResetDefaults()
@@ -41,6 +43,8 @@ void ResetDefaults()
     use_health_percentage = false;
     health_percentage_threshold = 50.0f;
     wood_chance = 75.0f;
+    prevent_with_skill          = false;
+    skill_level_threshold       = 50;
 
     set::destroy_bow.SetValue(destroy_bow);
     set::spawn_wood.SetValue(spawn_wood);
@@ -50,6 +54,8 @@ void ResetDefaults()
     set::use_health_percentage.SetValue(use_health_percentage);
     set::health_percentage_threshold.SetValue(health_percentage_threshold);
     set::wood_chance.SetValue(wood_chance);
+    set::prevent_with_skill.SetValue(prevent_with_skill);
+    set::skill_level_threshold.SetValue(skill_level_threshold);
 }
 
 void RenderSystem()
@@ -75,6 +81,21 @@ bool SettingSlider(const char *label, T &slider_var, const T min, const T max, c
 {
     ImGui::SetNextItemWidth(200.f);
     bool changed = ImGui::SliderScalar(label, ImGuiDataType_::ImGuiDataType_Float, &slider_var, &min, &max, fmt);
+    if (changed)
+    {
+        setting.SetValue(slider_var);
+    }
+    ImGui::SameLine();
+    ux::HelpMarker(help);
+    return changed;
+}
+
+template <class T>
+bool SettingSliderINT(const char* label, T& slider_var, const T min, const T max, const char* fmt, REX::TOML::Setting<T>& setting, const char* help)
+{
+
+   ImGui::SetNextItemWidth(200.f);
+    bool changed = ImGui::SliderScalar(label, ImGuiDataType_::ImGuiDataType_S32, &slider_var, &min, &max, fmt);
     if (changed)
     {
         setting.SetValue(slider_var);
@@ -125,6 +146,9 @@ void __stdcall RenderSettings()
                     Tool::use_health_percentage.c_str());
     SettingSlider(Label::health_percentage_threshold.c_str(), Var::health_percentage_threshold, 0.0f, 100.0f, "%.1f%%",
                   set::health_percentage_threshold, Tool::health_percentage_threshold.c_str());
+
+    SettingCheckbox(Label::prevent_with_skill.c_str(), Var::prevent_with_skill, set::prevent_with_skill, Tool::prevent_with_skill.c_str());
+    SettingSliderINT(Label::skill_level_threshold.c_str(), Var::skill_level_threshold, 0, 100, "%d", set::skill_level_threshold, Tool::skill_level_threshold.c_str());
 
     RenderSystem();
 
