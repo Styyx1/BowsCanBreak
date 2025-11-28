@@ -24,6 +24,9 @@ void RestoreFromSettings()
     only_power_attacks = set::only_power_attacks.GetValue();
     use_actor_mass = set::use_actor_mass.GetValue();
     mass_threshold = set::mass_threshold.GetValue();
+    health_percentage_threshold = set::health_percentage_threshold.GetValue();
+    use_health_percentage = set::use_health_percentage.GetValue();
+    wood_chance = set::wood_chance.GetValue();
 }
 
 void ResetDefaults()
@@ -33,14 +36,20 @@ void ResetDefaults()
     destroy_bow = true;
     spawn_wood = true;
     only_power_attacks = true;
-    use_actor_mass = true;
+    use_actor_mass = false;
     mass_threshold = 2.0f;
+    use_health_percentage = false;
+    health_percentage_threshold = 50.0f;
+    wood_chance = 75.0f;
 
     set::destroy_bow.SetValue(destroy_bow);
     set::spawn_wood.SetValue(spawn_wood);
     set::only_power_attacks.SetValue(only_power_attacks);
     set::use_actor_mass.SetValue(use_actor_mass);
     set::mass_threshold.SetValue(mass_threshold);
+    set::use_health_percentage.SetValue(use_health_percentage);
+    set::health_percentage_threshold.SetValue(health_percentage_threshold);
+    set::wood_chance.SetValue(wood_chance);
 }
 
 void RenderSystem()
@@ -100,6 +109,9 @@ void __stdcall RenderSettings()
     ImGui::SameLine();
     SettingCheckbox(Label::spawn_wood.c_str(), Var::spawn_wood, set::spawn_wood, Tool::spawn_wood.c_str());
 
+    SettingSlider(Label::wood_chance.c_str(), Var::wood_chance, 0.0f, 100.0f, "%.1f%%", set::wood_chance, Tool::wood_chance.c_str());
+
+
     SettingCheckbox(Label::only_power_attacks.c_str(), Var::only_power_attacks, set::only_power_attacks,
                     Tool::only_power_attacks.c_str());
     ImGui::SameLine();
@@ -108,6 +120,11 @@ void __stdcall RenderSettings()
 
     SettingSlider(Label::mass_threshold.c_str(), Var::mass_threshold, 0.0f, 50.0f, "%.2f", set::mass_threshold,
                   Tool::mass_threshold.c_str());
+
+    SettingCheckbox(Label::use_health_percentage.c_str(), Var::use_health_percentage, set::use_health_percentage,
+                    Tool::use_health_percentage.c_str());
+    SettingSlider(Label::health_percentage_threshold.c_str(), Var::health_percentage_threshold, 0.0f, 100.0f, "%.1f%%",
+                  set::health_percentage_threshold, Tool::health_percentage_threshold.c_str());
 
     RenderSystem();
 

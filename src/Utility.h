@@ -8,15 +8,15 @@ struct Utility
         if (Config::Settings::destroy_bow.GetValue()) {
             eqman->UnequipObject(defender, defender_weap, nullptr, 1, nullptr, false, true, true, true);
             defender->RemoveItem(defender_weap, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr, nullptr);
-            REX::DEBUG("destroyed {}", defender_weap->GetName());
             if (Config::Settings::spawn_wood.GetValue()) {
-                defender->PlaceObjectAtMe(Config::Formloader::firewood, false);
+                if (RandomiserUtil::GetRandomFloat(0.0f, 100.0f) <= Config::Settings::wood_chance.GetValue()) {
+                    defender->PlaceObjectAtMe(Config::Formloader::firewood, false);
+                }
             }
         }
         else {
             eqman->UnequipObject(defender, defender_weap, nullptr, 1, nullptr, false, true, true, true);
             defender->RemoveItem(defender_weap, 1, RE::ITEM_REMOVE_REASON::kDropping, nullptr, nullptr, nullptr);
-            REX::DEBUG("dropped {}", defender_weap->GetName());
         }        
     }
 };

@@ -37,6 +37,9 @@ namespace Menu
             inline std::string only_power_attacks        = "Require Power Attack";
             inline std::string use_actor_mass            = "Use Actor Mass";
             inline std::string mass_threshold            = "Mass Threshold";
+            inline std::string use_health_percentage     = "Use Health Percentage";
+            inline std::string health_percentage_threshold = "Health Percentage Threshold";
+            inline std::string wood_chance                 = "Wood Spawn Chance";
         } // namespace Label
 
         namespace Tool
@@ -46,6 +49,9 @@ namespace Menu
             inline std::string only_power_attacks = "Only power attacks can break bows";
             inline std::string use_actor_mass     = "If enabled, you need a mod that makes NPCs actually use the mass Actor Value (Requiem is one of those mods)";
             inline std::string mass_threshold     = "Minimum mass required for an actor to be able to break a bow";
+            inline std::string use_health_percentage = "Bows can only break if the health of the archer is below a certain percentage";
+            inline std::string health_percentage_threshold = "Health percentage threshold below which bows can break";
+            inline std::string wood_chance                 = "Chance (in percentage) to spawn firewood when a bow breaks";
         } // namespace Tool
 
         namespace Var
@@ -55,6 +61,9 @@ namespace Menu
             inline bool only_power_attacks;
             inline bool use_actor_mass;
             inline float mass_threshold;
+            inline bool  use_health_percentage;
+            inline float health_percentage_threshold;
+            inline float wood_chance;
         } // namespace Var
 
         void __stdcall RenderSettings();

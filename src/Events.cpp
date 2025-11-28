@@ -30,6 +30,11 @@ namespace Events
         return ActorUtil::HasEffectWithKeywordActive(defender, "UnbreakableBow");
     }
 
+    bool OnHitBow::IsInHealthRange(RE::Actor* defender) const
+    {
+        return !Config::Settings::use_health_percentage.GetValue() || ActorUtil::GetActorValuePercentage(defender, RE::ActorValue::kHealth) <= Config::Settings::health_percentage_threshold.GetValue() / 100.0;
+    }
+
     event_result OnHitBow::ProcessEvent(const RE::TESHitEvent* event, RE::BSTEventSource<RE::TESHitEvent>*)
     {
         using HFlag = RE::TESHitEvent::Flag;
@@ -59,6 +64,9 @@ namespace Events
             return event_result::kContinue;
         }
 
+        if (!IsInHealthRange(defender)) {
+            return event_result::kContinue;
+        }
         RE::TESObjectWEAP* attack_weapon  = ActorUtil::getWieldingWeapon(aggressor); 
         if (!attack_weapon || !attack_weapon->IsMelee() || attack_weapon->IsHandToHandMelee()) {
             return event_result::kContinue;
