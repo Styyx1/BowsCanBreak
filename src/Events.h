@@ -15,12 +15,11 @@ namespace Events
 
     private:
         bool IsInMassRange(RE::Actor* a_attacker) const;
-        bool UseOrIsPowerAttack(bool p_atk) const;
+        bool UseOrIsPowerAttack(RE::Actor* aggressor) const;
         bool CanDefenderWeaponBreak(RE::Actor* defender, RE::TESObjectWEAP* weapon) const;
         bool IsDefenderProtected(RE::Actor* defender) const;
         bool IsInHealthRange(RE::Actor* defender) const;
-        bool IsHighSkill(RE::Actor* defender) const;
-    
+        bool IsHighSkill(RE::Actor* defender) const;    
     };
 
 } // namespace Events

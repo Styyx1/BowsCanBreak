@@ -18,9 +18,9 @@ namespace Config
         inline static REX::TOML::F32  wood_chance{ SETTINGS, "fWoodSpawnChance", 75.0f };
         inline static REX::TOML::Bool prevent_with_skill{ TOGGLES, "bPreventWithSkill", false };
         inline static REX::TOML::I32  skill_level_threshold{ SETTINGS, "iSkillLevelThreshold", 50 };
+        //inline static REX::TOML::Bool log_debug_messages{ TOGGLES, "bLogDebugMessages", false };
 
         void UpdateSettings(bool a_save);
-
     };
 
     struct Formloader : REX::Singleton<Formloader>, MOD::DATA
