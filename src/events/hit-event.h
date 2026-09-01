@@ -1,9 +1,5 @@
 #pragma once
 
-#include "RE/A/Actor.h"
-#include "RE/B/BSTEvent.h"
-#include "RE/T/TESHitEvent.h"
-#include "REX/TSingleton.h"
 namespace NOOB
 {
 

@@ -21,7 +21,6 @@ set_policy("package.requires_lock", true)
 set_config("commonlib_toml", true)
 set_config("commonlib_random", true)
 
-
 -- targets
 target(MOD_NAME)
     add_deps("styyx-util")

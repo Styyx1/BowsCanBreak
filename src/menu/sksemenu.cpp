@@ -1,6 +1,5 @@
 #include "sksemenu.h"
 
-#include "API/SKSEMenuFramework.h"
 #include "config/config.h"
 #include "menu-defines.h"
 #include "st-ui.h"

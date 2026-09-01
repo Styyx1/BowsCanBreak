@@ -1,7 +1,5 @@
 #include "config.h"
 
-#include "REX/FTomlSettingStore.h"
-#include "REX/TSingleton.h"
 #include "mod-data.h"
 
 namespace NOOB

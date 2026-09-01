@@ -1,7 +1,5 @@
 #pragma once
 
-#include "RE/B/BGSKeyword.h"
-#include "RE/B/BGSKeywordForm.h"
 namespace NOOB
 {
 

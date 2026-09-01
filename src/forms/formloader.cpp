@@ -1,10 +1,6 @@
 #include "formloader.h"
 
-#include "RE/B/BGSKeywordForm.h"
-#include "RE/T/TESDataHandler.h"
-#include "RE/T/TESObjectMISC.h"
 #include "mod-data.h"
-#include "st-misc.h"
 
 namespace NOOB
 {
@@ -23,16 +19,48 @@ void FORMS::LoadForms()
 }
 void FORMS::LookupKeywords()
 {
-    m_breakableKey        = RE::TESForm::LookupByEditorID<RE::BGSKeyword>(BREAKWORD);
-    m_breakableKeyRequiem = RE::TESForm::LookupByEditorID<RE::BGSKeyword>(BREAKWORD_REQ);
 
-    if(!m_breakableKey){
-        REX::WARN("could not find {} keyword", BREAKWORD);
-    }
+    auto dh = RE::TESDataHandler::GetSingleton();
 
-    if (MiscUtil::IsModLoaded("Requiem.esp")){
-        if(!m_breakableKeyRequiem){
-            REX::WARN("Could not find requiem breakable keyword");
+    auto& keyarray = dh->GetFormArray(RE::FormType::Keyword);
+
+    bool found     = false;
+    bool found_req = false;
+
+    for (auto* key : keyarray)
+    {
+
+        auto keyw = key->As<RE::BGSKeyword>();
+        if (!keyw)
+        {
+            continue;
+        }
+        if (!REX::STR::IEQUALS(keyw->GetFormEditorID(), BREAKWORD) &&
+            !REX::STR::IEQUALS(keyw->GetFormEditorID(), BREAKWORD_REQ))
+        {
+            continue;
+        }
+
+        if (REX::STR::IEQUALS(keyw->GetFormEditorID(), BREAKWORD))
+        {
+            m_breakableKey = keyw;
+            found          = true;
+        }
+        if (MiscUtil::IsModLoaded("Requiem.esp"))
+        {
+            if (REX::STR::IEQUALS(keyw->GetFormEditorID(), BREAKWORD_REQ))
+            {
+                m_breakableKeyRequiem = keyw;
+                found_req             = true;
+            }
+        }
+        else
+        {
+            found_req = true;
+        }
+        if (found && found_req)
+        {
+            return;
         }
     }
 }

@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "REX/TTomlSetting.h"
 #include "mod-data.h"
 
 namespace NOOB{

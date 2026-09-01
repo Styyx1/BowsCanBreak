@@ -1,8 +1,5 @@
 #pragma once
 
-#include "RE/B/BSTEvent.h"
-#include "REX/TSingleton.h"
-#include "SKSE/Events.h"
 #include <forms/formloader.h>
 namespace NOOB
 {

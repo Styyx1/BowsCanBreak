@@ -1,17 +1,8 @@
 #include "hit-event.h"
 
-#include "RE/A/Actor.h"
-#include "RE/A/ActorEquipManager.h"
-#include "RE/A/ActorState.h"
-#include "RE/I/ItemRemoveReason.h"
-#include "RE/S/ScriptEventSourceHolder.h"
-#include "RE/T/TESHitEvent.h"
-#include "RE/T/TESObjectWEAP.h"
 #include "config/config.h"
 #include "forms/formloader.h"
 #include "mod-data.h"
-#include "st-actor.h"
-
 
 namespace NOOB
 {
@@ -46,7 +37,14 @@ bool HitEvList::UseOrIsPowerAttack(RE::Actor* a_attacker) const
 bool HitEvList::CanDefenderWeaponBreak(RE::Actor* a_victim, RE::TESObjectWEAP* a_weapon) const
 {
 
-    bool breakable = a_weapon->HasKeywordByEditorID(BREAKWORD) || a_weapon->HasKeywordByEditorID(BREAKWORD_REQ);
+    bool breakable = a_weapon->HasKeyword(FORMS::m_breakableKey) || a_weapon->HasKeyword(FORMS::m_breakableKeyRequiem);
+
+    // fallback if KID is not installed or fails for whatever reason.
+    //  Shouldn't actually happen
+    if (!FORMS::m_breakableKey)
+    {
+        breakable = a_weapon->HasKeywordString(BREAKWORD) || a_weapon->HasKeywordString(BREAKWORD_REQ);
+    }
 
     if (!breakable)
     {

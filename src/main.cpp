@@ -1,5 +1,3 @@
-#include "SKSE/API.h"
-#include "SKSE/Interfaces.h"
 #include "config/config.h"
 #include "events/hit-event.h"
 #include "forms/formloader.h"
@@ -36,5 +34,6 @@ SKSE_PLUGIN_LOAD(const SKSE::LoadInterface* a_skse)
     {
         return false;
     }
+    SKSE::GetModCallbackEventSource()->AddEventSink(&NOOB::g_modEventListener);
     return true;
 }
