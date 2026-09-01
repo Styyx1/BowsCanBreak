@@ -1,4 +1,46 @@
 {
+    ["linux|x86_64"] = {
+        ["cmake#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "5a85f58bd83c248ae5ebeffa3eb3f335ee817593",
+                url = "https://gitlab.com/tboox/xmake-repo.git"
+            },
+            version = "4.3.4"
+        },
+        ["ninja#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "5a85f58bd83c248ae5ebeffa3eb3f335ee817593",
+                url = "https://gitlab.com/tboox/xmake-repo.git"
+            },
+            version = "v1.13.2"
+        },
+        ["spdlog v1.16.0#09c8c173"] = {
+            repo = {
+                branch = "master",
+                commit = "5a85f58bd83c248ae5ebeffa3eb3f335ee817593",
+                url = "https://gitlab.com/tboox/xmake-repo.git"
+            },
+            version = "v1.16.0"
+        },
+        ["toml11 v4.4.0#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "5a85f58bd83c248ae5ebeffa3eb3f335ee817593",
+                url = "https://gitlab.com/tboox/xmake-repo.git"
+            },
+            version = "v4.4.0"
+        },
+        ["xoshiro-cpp 2021.08.04#f56260b5"] = {
+            repo = {
+                branch = "master",
+                commit = "5a85f58bd83c248ae5ebeffa3eb3f335ee817593",
+                url = "https://gitlab.com/tboox/xmake-repo.git"
+            },
+            version = "2021.08.04"
+        }
+    },
     __meta__ = {
         version = "1.0"
     },
